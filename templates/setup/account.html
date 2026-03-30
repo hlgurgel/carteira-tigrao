@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Criar conta — Carteira Tigrão{% endblock %}
+
+{% block content %}
+<div class="setup-card">
+  <div class="setup-step">Passo 1 de 2</div>
+  <h1 class="setup-title">Qual o nome da sua conta?</h1>
+
+  <div class="setup-explainer">
+    <p>
+      No <strong>Carteira Tigrão</strong> você controla seu dinheiro por meio de uma <strong>conta pessoal</strong>.
+      Não é necessário criar uma conta para cada banco ou cartão que você tem —
+      a ideia é ter <em>uma visão unificada</em> das suas finanças.
+    </p>
+    <p style="margin-top:12px">
+      Use seu próprio nome, um apelido, ou algo que faça sentido para você.<br/>
+      <strong>Exemplo:</strong> <em>Helder</em>, <em>Família Silva</em>, <em>Pessoal</em>.
+    </p>
+  </div>
+
+  <form method="POST" action="{{ url_for('setup.account') }}" class="setup-form">
+    <div class="form-group">
+      <label for="name">Nome da conta</label>
+      <input type="text" id="name" name="name" placeholder="Ex: Helder"
+             autocomplete="off" autofocus required maxlength="100"/>
+    </div>
+    <button type="submit" class="btn-primary btn-block">Criar conta →</button>
+  </form>
+</div>
+{% endblock %}

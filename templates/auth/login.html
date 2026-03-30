@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Entrar — Carteira Tigrão{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <div class="auth-logo">&#127801;</div>
+  <h1 class="auth-title">Carteira <strong>Tigrão</strong></h1>
+  <p class="auth-subtitle">Digite seu e-mail para receber sua senha de acesso.</p>
+
+  <form method="POST" action="{{ url_for('auth.login') }}" class="auth-form">
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" placeholder="seu@email.com"
+             autocomplete="email" autofocus required/>
+    </div>
+    <button type="submit" class="btn-primary btn-block">Enviar senha</button>
+  </form>
+
+  <p class="auth-hint">
+    Não tem conta? Basta informar seu e-mail — criaremos automaticamente.
+  </p>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(venv/bin/pip install:*)",
+      "Bash(venv/bin/python -c \"from app import create_app; app = create_app\\(\\); print\\(''OK''\\)\")",
+      "Bash(git add:*)"
+    ]
+  }
+}

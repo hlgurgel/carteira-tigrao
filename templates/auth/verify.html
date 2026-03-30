@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Verificar acesso — Carteira Tigrão{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <div class="auth-logo">📬</div>
+  <h1 class="auth-title">Verifique seu e-mail</h1>
+  <p class="auth-subtitle">
+    Enviamos duas palavras para <strong>{{ email }}</strong>.<br/>
+    Digite-as abaixo para entrar (válidas por 15 min).
+  </p>
+
+  <form method="POST" action="{{ url_for('auth.verify') }}" class="auth-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="word1">Palavra 1</label>
+        <input type="text" id="word1" name="word1" placeholder="primeira"
+               autocomplete="off" autofocus required/>
+      </div>
+      <div class="form-group">
+        <label for="word2">Palavra 2</label>
+        <input type="text" id="word2" name="word2" placeholder="segunda"
+               autocomplete="off" required/>
+      </div>
+    </div>
+    <button type="submit" class="btn-primary btn-block">Entrar</button>
+  </form>
+
+  <p class="auth-hint">
+    Não recebeu o e-mail?
+    <a href="{{ url_for('auth.login') }}">Solicitar novamente</a>
+  </p>
+</div>
+{% endblock %}

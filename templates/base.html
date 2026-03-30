@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Carteira Tigrão{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body class="app-body">
+
+  <nav class="app-nav">
+    <div class="nav-container">
+      <a href="{{ url_for('index') }}" class="nav-logo">
+        <span class="logo-icon">&#127801;</span>
+        <span>Carteira <strong>Tigrão</strong></span>
+      </a>
+      {% if current_user.is_authenticated %}
+      <div class="nav-user">
+        {% if current_user.account %}
+        <span class="nav-account-name">{{ current_user.account.name }}</span>
+        {% endif %}
+        <a href="{{ url_for('auth.logout') }}" class="btn-outline btn-sm">Sair</a>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main class="app-main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="flash flash-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>
