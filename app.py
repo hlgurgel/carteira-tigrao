@@ -35,8 +35,29 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        _auto_migrate(app)
 
     return app
+
+
+def _auto_migrate(app):
+    """Aplica migrações de coluna sem precisar de comando manual."""
+    from sqlalchemy import inspect, text
+    insp = inspect(db.engine)
+    if "transactions" not in insp.get_table_names():
+        return
+    cols = [c["name"] for c in insp.get_columns("transactions")]
+    if "transaction_type" not in cols:
+        with db.engine.begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE transactions ADD COLUMN transaction_type VARCHAR(10) NOT NULL DEFAULT 'expense'"
+            ))
+            conn.execute(text(
+                "UPDATE transactions SET transaction_type = "
+                "CASE WHEN category_id IN "
+                "(SELECT id FROM categories WHERE category_type = 'income') "
+                "THEN 'income' ELSE 'expense' END"
+            ))
 
 
 app = create_app()

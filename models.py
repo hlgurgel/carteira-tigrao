@@ -92,6 +92,8 @@ class Transaction(db.Model):
     )
     tag_id = db.Column(db.Integer, db.ForeignKey("tags.id"), nullable=False)
     amount = db.Column(db.Numeric(15, 2), nullable=False)
+    # "income" = entrada de dinheiro; "expense" = saída de dinheiro
+    transaction_type = db.Column(db.String(10), nullable=False, default="expense")
     date = db.Column(db.Date, nullable=False, default=lambda: datetime.utcnow().date())
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

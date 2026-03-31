@@ -4,36 +4,62 @@
 {% block content %}
 <div class="setup-card">
   <div class="setup-step">Passo 2 de 2</div>
-  <h1 class="setup-title">Configure seus percentuais</h1>
+  <h1 class="setup-title">Configure suas categorias de gastos</h1>
 
   <div class="setup-explainer">
     <p>
-      Quando você registrar uma <strong>entrada de dinheiro</strong>, o sistema reservará
-      automaticamente um percentual para cada categoria abaixo.
+      Defina as <strong>categorias</strong> que farão sentido para você e o
+      <strong>percentual</strong> de cada entrada que será reservado para cada uma.
     </p>
-    <p style="margin-top:12px">
-      Os percentuais devem somar <strong>100%</strong>. Ajuste como preferir.
+    <p style="margin-top:10px">
+      Sugestão de início: <em>Gastos Fixos 30% · Gastos Variáveis 30% · Investimentos 40%</em>.
+      Os percentuais devem somar <strong>100%</strong>.
     </p>
   </div>
 
-  <form method="POST" action="{{ url_for('setup.categories') }}" class="setup-form" id="cat-form">
-    {% for cat in categories %}
-    <div class="cat-row" style="--cat-color: {{ cat.color }}">
-      <div class="cat-dot"></div>
-      <span class="cat-name">{{ cat.name }}</span>
-      <div class="cat-input-wrap">
-        <input type="number" name="pct_{{ cat.id }}"
-               value="{{ cat.percentage | int }}"
-               min="0" max="100" step="1"
-               class="cat-pct-input" oninput="updateTotal()"/>
-        <span class="cat-pct-sign">%</span>
+  <form method="POST" action="{{ url_for('setup.categories') }}" id="cat-form">
+    <div id="cat-list">
+      {% for cat in categories %}
+      <div class="cat-edit-row" id="row-{{ cat.id }}">
+        <input type="hidden" name="cat_ids[]" value="{{ cat.id }}"/>
+
+        <!-- Paleta de cores -->
+        <div class="color-picker-wrap">
+          <div class="color-swatch selected" style="background:{{ cat.color }}"
+               data-color="{{ cat.color }}" onclick="togglePalette(this)"></div>
+          <div class="color-palette hidden">
+            {% for c in preset_colors %}
+            <div class="palette-dot {% if c == cat.color %}active{% endif %}"
+                 style="background:{{ c }}" data-color="{{ c }}"
+                 onclick="pickColor(this)"></div>
+            {% endfor %}
+          </div>
+        </div>
+        <input type="hidden" name="cat_colors[]" value="{{ cat.color }}" class="color-val"/>
+
+        <input type="text" name="cat_names[]" value="{{ cat.name }}"
+               class="cat-name-input" placeholder="Nome da categoria" required/>
+
+        <div class="cat-pct-wrap">
+          <input type="number" name="cat_pcts[]" value="{{ cat.percentage | int }}"
+                 min="0" max="100" step="1" class="cat-pct-input" oninput="updateTotal()"/>
+          <span class="cat-pct-sign">%</span>
+        </div>
+
+        <button type="button" class="cat-delete-btn" onclick="removeRow(this, '{{ cat.id }}')"
+                title="Remover categoria">✕</button>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
+
+    <!-- Inputs hidden para categorias marcadas para delete -->
+    <div id="delete-inputs"></div>
+
+    <button type="button" class="btn-add-cat" onclick="addRow()">+ Adicionar categoria</button>
 
     <div class="cat-total-row">
       <span>Total:</span>
-      <span id="total-display" class="cat-total-value">100%</span>
+      <span id="total-display" class="cat-total-value ok">100%</span>
     </div>
 
     <button type="submit" class="btn-primary btn-block">Confirmar e ir para o painel →</button>
@@ -41,13 +67,90 @@
 </div>
 
 <script>
+const COLORS = {{ preset_colors | tojson }};
+let newIdx = 0;
+
 function updateTotal() {
-  const inputs = document.querySelectorAll('.cat-pct-input');
+  const inputs = document.querySelectorAll('#cat-list .cat-pct-input');
   let sum = 0;
   inputs.forEach(i => sum += parseFloat(i.value) || 0);
   const el = document.getElementById('total-display');
   el.textContent = sum.toFixed(0) + '%';
   el.className = 'cat-total-value ' + (Math.abs(sum - 100) < 0.1 ? 'ok' : 'error');
 }
+
+function togglePalette(swatch) {
+  // Fecha todas as outras paletas abertas
+  document.querySelectorAll('.color-palette').forEach(p => {
+    if (p !== swatch.nextElementSibling) p.classList.add('hidden');
+  });
+  swatch.nextElementSibling.classList.toggle('hidden');
+}
+
+function pickColor(dot) {
+  const color = dot.dataset.color;
+  const palette = dot.closest('.color-palette');
+  const swatch = palette.previousElementSibling;
+  const row = dot.closest('.cat-edit-row');
+
+  swatch.style.background = color;
+  swatch.dataset.color = color;
+  row.querySelector('.color-val').value = color;
+
+  palette.querySelectorAll('.palette-dot').forEach(d => d.classList.remove('active'));
+  dot.classList.add('active');
+  palette.classList.add('hidden');
+}
+
+function removeRow(btn, catId) {
+  const row = btn.closest('.cat-edit-row');
+  row.remove();
+
+  if (catId !== 'new') {
+    const inp = document.createElement('input');
+    inp.type = 'hidden';
+    inp.name = 'cat_delete[]';
+    inp.value = catId;
+    document.getElementById('delete-inputs').appendChild(inp);
+  }
+  updateTotal();
+}
+
+function addRow() {
+  newIdx++;
+  const color = COLORS[newIdx % COLORS.length];
+  const row = document.createElement('div');
+  row.className = 'cat-edit-row';
+  row.innerHTML = `
+    <input type="hidden" name="cat_ids[]" value="new"/>
+    <div class="color-picker-wrap">
+      <div class="color-swatch selected" style="background:${color}"
+           data-color="${color}" onclick="togglePalette(this)"></div>
+      <div class="color-palette hidden">
+        ${COLORS.map(c => `<div class="palette-dot${c===color?' active':''}" style="background:${c}" data-color="${c}" onclick="pickColor(this)"></div>`).join('')}
+      </div>
+    </div>
+    <input type="hidden" name="cat_colors[]" value="${color}" class="color-val"/>
+    <input type="text" name="cat_names[]" value="" class="cat-name-input" placeholder="Nome da categoria" required/>
+    <div class="cat-pct-wrap">
+      <input type="number" name="cat_pcts[]" value="0" min="0" max="100" step="1"
+             class="cat-pct-input" oninput="updateTotal()"/>
+      <span class="cat-pct-sign">%</span>
+    </div>
+    <button type="button" class="cat-delete-btn" onclick="removeRow(this,'new')" title="Remover">✕</button>
+  `;
+  document.getElementById('cat-list').appendChild(row);
+  row.querySelector('.cat-name-input').focus();
+  updateTotal();
+}
+
+// Fechar paleta ao clicar fora
+document.addEventListener('click', e => {
+  if (!e.target.closest('.color-picker-wrap')) {
+    document.querySelectorAll('.color-palette').forEach(p => p.classList.add('hidden'));
+  }
+});
+
+updateTotal();
 </script>
 {% endblock %}

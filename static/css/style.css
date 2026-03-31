@@ -498,6 +498,169 @@ input, button { font-family: inherit; }
 .positive { color: var(--green); }
 .negative { color: var(--red); }
 
+/* ===== TX TYPE TOGGLE (Entrada/Saída) ===== */
+.tx-type-toggle {
+  display: flex;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.tx-type-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.tx-type-btn.active { background: var(--bg-card); color: var(--text-primary); font-weight: 600; }
+.tx-type-btn:hover:not(.active) { color: var(--text-primary); }
+
+/* Badge "entrada direta" na lista de transações */
+.tx-badge-direct {
+  display: inline-block;
+  font-size: 0.65rem;
+  background: rgba(34,197,94,0.12);
+  color: var(--green);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* ===== KEYBOARD SHORTCUTS ===== */
+.dash-header-actions { display: flex; align-items: center; gap: 8px; }
+
+.shortcuts-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 6px;
+  width: 32px; height: 32px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+.shortcuts-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.shortcuts-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}
+.shortcuts-panel.hidden { display: none; }
+.shortcut-row { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-muted); }
+
+kbd {
+  display: inline-block;
+  background: var(--bg-primary);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: var(--text-primary);
+  min-width: 26px;
+  text-align: center;
+}
+
+/* ===== COLOR PICKER (setup categorias) ===== */
+.cat-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.color-picker-wrap { position: relative; flex-shrink: 0; }
+.color-swatch {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.15);
+  transition: transform 0.15s;
+  flex-shrink: 0;
+}
+.color-swatch:hover { transform: scale(1.15); }
+.color-palette {
+  position: absolute;
+  top: 30px;
+  left: -4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 22px);
+  gap: 8px;
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.color-palette.hidden { display: none; }
+.palette-dot {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.15s;
+}
+.palette-dot:hover { transform: scale(1.15); }
+.palette-dot.active { border-color: #fff; }
+
+.cat-name-input {
+  flex: 1;
+  padding: 8px 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  min-width: 0;
+}
+.cat-name-input:focus { border-color: var(--accent); }
+
+.cat-pct-wrap { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+.cat-delete-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 4px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.cat-delete-btn:hover { color: var(--red); }
+
+.btn-add-cat {
+  background: none;
+  border: 1px dashed rgba(255,255,255,0.15);
+  color: var(--text-muted);
+  border-radius: 8px;
+  width: 100%;
+  padding: 10px;
+  margin: 14px 0 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-add-cat:hover { border-color: var(--accent); color: var(--accent); }
+
 /* ===== LANDING PAGE NAVBAR ===== */
 .navbar {
   position: sticky;
