@@ -22,8 +22,11 @@
     </div>
 
     <div class="dash-header-actions">
-      <button class="btn-primary btn-sm" onclick="openModal()" title="Nova movimentação  [N]">
-        + Movimentação
+      <button class="btn-primary btn-sm" onclick="openModal('income')" title="Nova entrada  [E]">
+        📥 Entrada
+      </button>
+      <button class="btn-outline btn-sm" onclick="openModal('expense')" title="Nova saída  [S]">
+        📤 Saída
       </button>
       <button class="shortcuts-btn" onclick="toggleShortcuts()" title="Atalhos de teclado">⌨</button>
     </div>
@@ -31,12 +34,13 @@
 
   <!-- PAINEL DE ATALHOS (oculto por padrão) -->
   <div id="shortcuts-panel" class="shortcuts-panel hidden">
-    <div class="shortcut-row"><kbd>N</kbd> Nova movimentação</div>
+    <div class="shortcut-row"><kbd>E</kbd> Nova entrada</div>
+    <div class="shortcut-row"><kbd>S</kbd> Nova saída</div>
     <div class="shortcut-row"><kbd>←</kbd> Período anterior</div>
     <div class="shortcut-row"><kbd>→</kbd> Próximo período</div>
     <div class="shortcut-row"><kbd>Esc</kbd> Fechar modal</div>
-    <div class="shortcut-row"><kbd>Tab</kbd> Navegar campos do formulário</div>
-    <div class="shortcut-row"><kbd>Enter</kbd> Confirmar formulário</div>
+    <div class="shortcut-row"><kbd>Tab</kbd> Navegar campos</div>
+    <div class="shortcut-row"><kbd>Enter</kbd> Salvar</div>
   </div>
 
   <!-- CARDS DE CATEGORIAS -->
@@ -130,8 +134,11 @@
     {% else %}
     <div class="tx-empty">
       Nenhuma movimentação neste período.<br/>
-      <button class="btn-outline btn-sm" onclick="openModal()" style="margin-top:16px">
-        + Adicionar  <kbd style="font-size:0.7rem;margin-left:4px">N</kbd>
+      <button class="btn-primary btn-sm" onclick="openModal('income')" style="margin-top:16px">
+        📥 Entrada <kbd style="font-size:0.7rem;margin-left:4px">E</kbd>
+      </button>
+      <button class="btn-outline btn-sm" onclick="openModal('expense')" style="margin-top:16px;margin-left:8px">
+        📤 Saída <kbd style="font-size:0.7rem;margin-left:4px">S</kbd>
       </button>
     </div>
     {% endif %}
@@ -159,9 +166,9 @@
     <!-- Toggle Entrada / Saída -->
     <div class="tx-type-toggle" id="tx-type-toggle">
       <button type="button" class="tx-type-btn active" id="btn-income"
-              onclick="setTxType('income')">📥 Entrada</button>
+              tabindex="1" onclick="setTxType('income')">📥 Entrada</button>
       <button type="button" class="tx-type-btn" id="btn-expense"
-              onclick="setTxType('expense')">📤 Saída</button>
+              tabindex="2" onclick="setTxType('expense')">📤 Saída</button>
     </div>
 
     <form method="POST" action="{{ url_for('main.add_transaction') }}" id="tx-form">
@@ -171,14 +178,14 @@
       <div class="form-group">
         <label for="m-amount">Valor (R$)</label>
         <input type="text" id="m-amount" name="amount" placeholder="0,00"
-               inputmode="decimal" autocomplete="off" required/>
+               inputmode="decimal" autocomplete="off" required tabindex="3"/>
       </div>
 
       <!-- Categoria — muda conforme tipo -->
       <div class="form-group">
         <label id="cat-label">Para qual categoria?</label>
         <div class="cat-selector" id="cat-selector">
-          <!-- Preenchido pelo JS abaixo -->
+          <!-- Preenchido pelo JS abaixo (tabindex=4 aplicado pelo JS) -->
         </div>
       </div>
 
@@ -186,17 +193,17 @@
       <div class="form-group" style="position:relative">
         <label for="m-tag">Tag / Descrição</label>
         <input type="text" id="m-tag" name="tag" placeholder="Ex: Bolão Megasena"
-               autocomplete="off" required oninput="searchTags(this.value)"/>
+               autocomplete="off" required oninput="searchTags(this.value)" tabindex="5"/>
         <ul id="tag-suggestions" class="tag-suggestions hidden"></ul>
       </div>
 
       <!-- Data -->
       <div class="form-group">
         <label for="m-date">Data</label>
-        <input type="date" id="m-date" name="date" value="{{ today.strftime('%Y-%m-%d') }}"/>
+        <input type="date" id="m-date" name="date" value="{{ today.strftime('%Y-%m-%d') }}" tabindex="6"/>
       </div>
 
-      <button type="submit" class="btn-primary btn-block">Salvar</button>
+      <button type="submit" class="btn-primary btn-block" tabindex="7">Salvar</button>
     </form>
   </div>
 </div>

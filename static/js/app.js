@@ -74,7 +74,7 @@ function makeCatOption(id, name, color, checked) {
   lbl.className = 'cat-option';
   lbl.style.setProperty('--cat-color', color);
   lbl.innerHTML = `
-    <input type="radio" name="category_id" value="${id}" ${checked ? 'checked' : ''} required/>
+    <input type="radio" name="category_id" value="${id}" tabindex="4" ${checked ? 'checked' : ''} required/>
     <span>${name}</span>
   `;
   return lbl;
@@ -122,9 +122,15 @@ document.addEventListener('keydown', e => {
 
   if (inInput) return;
 
-  if (e.key === 'n' || e.key === 'N') {
+  if (e.key === 'e' || e.key === 'E') {
     e.preventDefault();
-    openModal();
+    openModal('income');
+    return;
+  }
+
+  if (e.key === 's' || e.key === 'S') {
+    e.preventDefault();
+    openModal('expense');
     return;
   }
 

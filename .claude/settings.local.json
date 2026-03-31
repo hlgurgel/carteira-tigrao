@@ -5,7 +5,8 @@
       "Bash(venv/bin/python -c \"from app import create_app; app = create_app\\(\\); print\\(''OK''\\)\")",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(pkill -f \"python app.py\")"
     ]
   }
 }
